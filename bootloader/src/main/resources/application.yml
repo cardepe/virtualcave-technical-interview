@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    default: standalone
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jackson:
+    default-property-inclusion: NON_NULL
+    deserialization:
+      fail-on-unknown-properties: false
+    serialization:
+      write-dates-as-timestamps: false
+
+logging:
+  level:
+    org.springframework.web: DEBUG

@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Rate Api
+  description: Handle the info about rates in platform
+  version: '1.0'
+tags:
+  - name: rates-v1
+    description: V1 - Rates
+paths:
+  /v1/rates:
+    get:
+      summary: V1 - List rates
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rate'
+      operationId: list-rates-v1
+      description: list-rates-v1
+      tags:
+        - rates-v1
+      parameters:
+        - schema:
+            type: string
+            format: date
+          in: query
+          name: dateBetween
+          description: Date filtered between start and end date.
+        - schema:
+            type: integer
+          in: query
+          name: brandId
+          description: Brand identifier.
+        - schema:
+            type: integer
+          in: query
+          name: productId
+          description: Product identifier.
+    post:
+      summary: V1 - Create rate
+      operationId: create-rate-v1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+      description: create-rate-v1
+      tags:
+        - rates-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateRate'
+  '/v1/rates/{rateId}':
+    parameters:
+      - schema:
+          type: integer
+        name: rateId
+        in: path
+        required: true
+        description: Rate identifier.
+    get:
+      summary: V1 - Find rate
+      tags:
+        - rates-v1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+        '404':
+          description: Rate not found
+      operationId: find-rate-by-id-v1
+      description: find-rate-by-id-v1
+    put:
+      summary: V1 - Update rate
+      operationId: update-rate-v1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+        '404':
+          description: Rate not found
+      tags:
+        - rates-v1
+      description: update-rate-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateRate'
+    delete:
+      summary: V1 - Delete rate
+      operationId: delete-rate-v1
+      responses:
+        '200':
+          description: successful operation
+      tags:
+        - rates-v1
+      description: delete-rate-v1
+components:
+  schemas:
+    Rate:
+      title: Rate
+      x-stoplight:
+        id: fyfbwiy72em0q
+      type: object
+      properties:
+        id:
+          type: integer
+        brandId:
+          type: integer
+        productId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        price:
+          type: integer
+        currencyCode:
+          type: string
+      required:
+        - id
+        - brandId
+        - productId
+        - startDate
+        - endDate
+        - price
+        - currencyCode
+    ReqCreateRate:
+      title: ReqCreateRate
+      x-stoplight:
+        id: w99ah77gty3yh
+      type: object
+      properties:
+        brandId:
+          type: integer
+        productId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        price:
+          type: integer
+        currencyCode:
+          type: string
+      required:
+        - brandId
+        - productId
+        - startDate
+        - endDate
+        - price
+        - currencyCode
+    ReqUpdateRate:
+      title: ReqUpdateRate
+      x-stoplight:
+        id: th3743k5pk3u3
+      type: object
+      properties:
+        brandId:
+          type: integer
+        productId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        price:
+          type: integer
+        currencyCode:
+          type: string
+      required:
+        - brandId
+        - productId
+        - startDate
+        - endDate
+        - price
+        - currencyCode
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+security:
+  - basicAuth: []
