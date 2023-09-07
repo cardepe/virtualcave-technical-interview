@@ -1,4 +1,4 @@
-package com.virtualcave.rate.infrastructure.controller;
+package com.virtualcave.rate.infrastructure.rest;
 
 import com.virtualcave.rate.restapi.openapi.api.RatesV1Api;
 import com.virtualcave.rate.restapi.openapi.model.Rate;
