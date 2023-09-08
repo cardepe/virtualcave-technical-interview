@@ -4,13 +4,15 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password: password
+  jpa:
+    show-sql: true
   h2:
     console:
       enabled: true
   sql:
     init:
-      schema-locations: classpath:db/init-db.sql
       mode: always
+      data-locations: classpath:db/init-db.sql
 
 logging:
   level:
