@@ -1,19 +1,19 @@
-package com.virtualcave.rate.infrastructure.persistence.repository;
+package com.virtualcave.rate.infrastructure.repository;
 
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
 import com.virtualcave.rate.domain.dto.finder.RateByIdFinderDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.domain.entity.RateEntity;
 import com.virtualcave.rate.domain.repository.RateRepository;
-import com.virtualcave.rate.infrastructure.mappers.MapRToRateEntity;
-import org.springframework.stereotype.Service;
+import com.virtualcave.rate.application.mappers.MapRToRateEntity;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
-@Service
+@Repository
 public class RateRepositoryImpl implements RateRepository {
 
     private final RateRepositoryJpa rateRepositoryJpa;

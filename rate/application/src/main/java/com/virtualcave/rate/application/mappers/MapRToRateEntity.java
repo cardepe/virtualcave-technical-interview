@@ -1,4 +1,4 @@
-package com.virtualcave.rate.infrastructure.mappers;
+package com.virtualcave.rate.application.mappers;
 
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;

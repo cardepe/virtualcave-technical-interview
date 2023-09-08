@@ -1,4 +1,4 @@
-package com.virtualcave.rate.infrastructure.persistence.repository;
+package com.virtualcave.rate.infrastructure.repository;
 
 import com.virtualcave.rate.domain.entity.RateEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
