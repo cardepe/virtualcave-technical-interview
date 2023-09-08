@@ -1,14 +1,15 @@
 package com.virtualcave.rate.infrastructure.repository;
 
+import com.virtualcave.rate.application.mappers.MapRCToRateEntity;
+import com.virtualcave.rate.application.mappers.MapRUToRateEntity;
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
-import com.virtualcave.rate.domain.dto.finder.RateByIdFinderDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.domain.entity.RateEntity;
 import com.virtualcave.rate.domain.repository.RateRepository;
-import com.virtualcave.rate.application.mappers.MapRToRateEntity;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -23,29 +24,29 @@ public class RateRepositoryImpl implements RateRepository {
     }
 
     @Override
-    public List<RateEntity> list() {
+    public Flux<RateEntity> list() {
         return this.rateRepositoryJpa.findAll();
     }
 
     @Override
-    public Optional<RateEntity> find(RateByIdFinderDto finderDto) {
-        return this.rateRepositoryJpa.findById(finderDto.getId());
+    public Mono<Optional<RateEntity>> find(Integer id) {
+        return this.rateRepositoryJpa.findById(id).map(Optional::of);
     }
 
     @Override
-    public RateEntity create(RateCreateDto createDto) {
+    public Mono<RateEntity> create(Mono<RateCreateDto> createDto) {
 
-        final RateEntity create = getMapper(MapRToRateEntity.class).from(createDto);
+        final Mono<RateEntity> create = getMapper(MapRCToRateEntity.class).from(createDto);
 
-        return this.rateRepositoryJpa.save(create);
+        return create.flatMap(this.rateRepositoryJpa::save);
     }
 
     @Override
-    public RateEntity update(RateUpdateDto updateDto) {
+    public Mono<RateEntity> update(Mono<RateUpdateDto> updateDto) {
 
-        final RateEntity update = getMapper(MapRToRateEntity.class).from(updateDto);
+        final Mono<RateEntity> update = getMapper(MapRUToRateEntity.class).from(updateDto);
 
-        return this.rateRepositoryJpa.save(update);
+        return update.flatMap(this.rateRepositoryJpa::save);
     }
 
     @Override

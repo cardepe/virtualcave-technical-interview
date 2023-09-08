@@ -2,16 +2,17 @@ package com.virtualcave.currency.application.service;
 
 import com.virtualcave.currency.domain.dto.CurrencyDto;
 import com.virtualcave.currency.domain.dto.finder.CurrencyByCodeFinderDto;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CurrencyService {
 
-    List<CurrencyDto> list();
+    Flux<CurrencyDto> list();
 
-    Optional<CurrencyDto> find(CurrencyByCodeFinderDto finderDto);
+    Mono<Optional<CurrencyDto>> find(Mono<CurrencyByCodeFinderDto> finderDto);
 
-    CurrencyDto findOrNotFound(CurrencyByCodeFinderDto finderDto);
+    Mono<CurrencyDto> findOrNotFound(Mono<CurrencyByCodeFinderDto> finderDto);
 
 }

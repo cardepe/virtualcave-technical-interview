@@ -8,8 +8,9 @@ import com.virtualcave.currency.restapi.openapi.api.CurrenciesApi;
 import com.virtualcave.currency.restapi.openapi.model.Currency;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -23,26 +24,26 @@ public class CurrencyController implements CurrenciesApi {
     }
 
     @Override
-    public ResponseEntity<List<Currency>> getCurrencies() {
+    public Mono<ResponseEntity<Flux<Currency>>> getCurrencies(ServerWebExchange exchange) {
 
-        final List<CurrencyDto> list = this.currencyService.list();
+        final Flux<CurrencyDto> list = this.currencyService.list();
 
-        final List<Currency> currencies = getMapper(MapCToCurrency.class).from(list);
+        final Flux<Currency> currencies = getMapper(MapCToCurrency.class).from(list);
 
-        return ResponseEntity.ok(currencies);
+        return Mono.just(ResponseEntity.ok(currencies));
     }
 
     @Override
-    public ResponseEntity<Currency> getCurrencyByCode(String currencyCode) {
+    public Mono<ResponseEntity<Currency>> getCurrencyByCode(String currencyCode, ServerWebExchange exchange) {
 
         final CurrencyByCodeFinderDto finderDto = new CurrencyByCodeFinderDto();
         finderDto.setCode(currencyCode);
 
-        final CurrencyDto found = this.currencyService.findOrNotFound(finderDto);
+        final Mono<CurrencyDto> found = this.currencyService.findOrNotFound(Mono.just(finderDto));
 
-        final Currency currency = getMapper(MapCToCurrency.class).from(found);
+        final Mono<Currency> currency = getMapper(MapCToCurrency.class).from(found);
 
-        return ResponseEntity.ok(currency);
+        return currency.map(ResponseEntity::ok);
     }
 
 }

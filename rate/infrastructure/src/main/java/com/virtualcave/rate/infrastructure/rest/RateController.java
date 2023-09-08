@@ -3,7 +3,6 @@ package com.virtualcave.rate.infrastructure.rest;
 import com.virtualcave.rate.application.service.RateService;
 import com.virtualcave.rate.domain.dto.RateDto;
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
-import com.virtualcave.rate.domain.dto.finder.RateByIdFinderDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.infrastructure.mappers.MapRToRateCreateDto;
 import com.virtualcave.rate.infrastructure.mappers.MapRToRateResponse;
@@ -14,9 +13,11 @@ import com.virtualcave.rate.restapi.openapi.model.ReqCreateRate;
 import com.virtualcave.rate.restapi.openapi.model.ReqUpdateRate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -30,58 +31,49 @@ public class RateController implements RatesV1Api {
     }
 
     @Override
-    public ResponseEntity<List<Rate>> listRatesV1(LocalDate dateBetween, Integer brandId, Integer productId) {
+    public Mono<ResponseEntity<Flux<Rate>>> listRatesV1(LocalDate dateBetween, Integer brandId, Integer productId, ServerWebExchange exchange) {
 
-        final List<RateDto> list = this.rateService.list();
+        final Flux<RateDto> list = this.rateService.list();
 
-        final List<Rate> response = getMapper(MapRToRateResponse.class).from(list);
+        final Flux<Rate> response = getMapper(MapRToRateResponse.class).from(list);
 
-        return ResponseEntity.ok(response);
+        return Mono.just(ResponseEntity.ok(response));
     }
 
     @Override
-    public ResponseEntity<Rate> findRateByIdV1(Integer rateId) {
+    public Mono<ResponseEntity<Rate>> findRateByIdV1(Integer rateId, ServerWebExchange exchange) {
 
-        final RateByIdFinderDto finderDto = new RateByIdFinderDto();
-        finderDto.setId(rateId);
-
-        final RateDto rateDto = this.rateService.findOrNotFound(finderDto);
-
-        final Rate response = getMapper(MapRToRateResponse.class).from(rateDto);
-
-        return ResponseEntity.ok(response);
+        return this.rateService.findOrNotFound(rateId)
+                .map(r -> getMapper(MapRToRateResponse.class).from(r))
+                .map(ResponseEntity::ok);
     }
 
     @Override
-    public ResponseEntity<Rate> createRateV1(ReqCreateRate reqCreateRate) {
+    public Mono<ResponseEntity<Rate>> createRateV1(Mono<ReqCreateRate> reqCreateRate, ServerWebExchange exchange) {
 
-        final RateCreateDto createDto = getMapper(MapRToRateCreateDto.class).from(reqCreateRate);
+        final Mono<RateCreateDto> createDto = getMapper(MapRToRateCreateDto.class).from(reqCreateRate);
 
-        final RateDto rateDto = this.rateService.create(createDto);
-
-        final Rate response = getMapper(MapRToRateResponse.class).from(rateDto);
-
-        return ResponseEntity.ok(response);
+        return this.rateService.create(createDto)
+                .map(r -> getMapper(MapRToRateResponse.class).from(r))
+                .map(ResponseEntity::ok);
     }
 
     @Override
-    public ResponseEntity<Rate> updateRateV1(Integer rateId, ReqUpdateRate reqUpdateRate) {
+    public Mono<ResponseEntity<Rate>> updateRateV1(Integer rateId, Mono<ReqUpdateRate> reqUpdateRate, ServerWebExchange exchange) {
 
-        final RateUpdateDto updateDto = getMapper(MapRToRateUpdateDto.class).from(reqUpdateRate);
-        updateDto.setId(rateId);
+        final Mono<RateUpdateDto> updateDto = getMapper(MapRToRateUpdateDto.class).from(reqUpdateRate)
+                .map(r -> { r.setId(rateId); return r; });
 
-        final RateDto rateDto = this.rateService.update(updateDto);
-
-        final Rate response = getMapper(MapRToRateResponse.class).from(rateDto);
-
-        return ResponseEntity.ok(response);
+        return this.rateService.update(rateId, updateDto)
+                .map(r -> getMapper(MapRToRateResponse.class).from(r))
+                .map(ResponseEntity::ok);
     }
 
     @Override
-    public ResponseEntity<Void> deleteRateV1(Integer rateId) {
+    public Mono<ResponseEntity<Void>> deleteRateV1(Integer rateId, ServerWebExchange exchange) {
 
         this.rateService.delete(rateId);
 
-        return ResponseEntity.ok().build();
+        return Mono.just(ResponseEntity.ok().build());
     }
 }

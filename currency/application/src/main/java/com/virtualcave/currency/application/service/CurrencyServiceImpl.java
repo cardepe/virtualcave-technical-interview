@@ -4,8 +4,11 @@ import com.virtualcave.currency.application.exceptions.CurrencyForCodeNotFoundEx
 import com.virtualcave.currency.domain.dto.CurrencyDto;
 import com.virtualcave.currency.domain.dto.finder.CurrencyByCodeFinderDto;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -13,21 +16,21 @@ import java.util.function.Supplier;
 public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
-    public List<CurrencyDto> list() {
-        return this.buildCurrencyList();
+    public Flux<CurrencyDto> list() {
+        return Flux.fromIterable(this.buildCurrencyList());
     }
 
     @Override
-    public Optional<CurrencyDto> find(CurrencyByCodeFinderDto finderDto) {
-        return this.buildCurrencyList().stream().filter(c -> finderDto.getCode().equals(c.getCode())).findAny();
+    public Mono<Optional<CurrencyDto>> find(Mono<CurrencyByCodeFinderDto> finderDto) {
+        return Mono.just(this.buildCurrencyList().stream().filter(c -> Objects.requireNonNull(finderDto.block()).getCode().equals(c.getCode())).findAny());
     }
 
     @Override
-    public CurrencyDto findOrNotFound(CurrencyByCodeFinderDto finderDto) {
+    public Mono<CurrencyDto> findOrNotFound(Mono<CurrencyByCodeFinderDto> finderDto) {
 
-        final Supplier<RuntimeException> notFound = () -> new CurrencyForCodeNotFoundException(finderDto.getCode());
+        final Supplier<RuntimeException> notFound = () -> new CurrencyForCodeNotFoundException(Objects.requireNonNull(finderDto.block()).getCode());
 
-        return this.find(finderDto).orElseThrow(notFound);
+        return this.find(finderDto).flatMap(optional -> optional.map(Mono::just).orElseThrow(notFound));
     }
 
     private List<CurrencyDto> buildCurrencyList() {

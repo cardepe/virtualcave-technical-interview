@@ -1,22 +1,22 @@
 package com.virtualcave.rate.domain.repository;
 
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
-import com.virtualcave.rate.domain.dto.finder.RateByIdFinderDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.domain.entity.RateEntity;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface RateRepository {
 
-    List<RateEntity> list();
+    Flux<RateEntity> list();
 
-    Optional<RateEntity> find(RateByIdFinderDto finderDto);
+    Mono<Optional<RateEntity>> find(Integer id);
 
-    RateEntity create(RateCreateDto createDto);
+    Mono<RateEntity> create(Mono<RateCreateDto> createDto);
 
-    RateEntity update(RateUpdateDto updateDto);
+    Mono<RateEntity> update(Mono<RateUpdateDto> updateDto);
 
     void delete(Integer id);
 

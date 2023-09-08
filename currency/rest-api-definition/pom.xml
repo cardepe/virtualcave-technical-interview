@@ -13,27 +13,6 @@
     <artifactId>currency-rest-api-definition</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -53,6 +32,7 @@
                             <modelPackage>com.virtualcave.currency.restapi.openapi.model</modelPackage>
                             <skipOverwrite>true</skipOverwrite>
                             <configOptions>
+                                <reactive>true</reactive>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>
