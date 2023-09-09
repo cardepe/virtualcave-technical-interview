@@ -13,3 +13,35 @@ This project consists of an application of e-commerce with which you can consult
  * [wiremock](https://wiremock.org/) to test rest calls.
 
 For more libraries and utilities used in this project, you can check the [pom.xml](pom.xml)
+
+## What we need
+
+* Java JDK 17.0.6
+* Apache Maven 3.8.7
+
+## Hexagonal architecture
+
+### Folder structure
+
+```sh
+project
+  ├───bootloader
+  ├───currency
+  │   ├───application
+  │   ├───domain
+  │   ├───infrastructure
+  │   └───rest-api-definition
+  ├───rate
+  │   ├───application
+  │   ├───domain
+  │   ├───infrastructure
+  │   └───rest-api-definition
+  └───pom.xml
+
+```
+
+This structure has been created where each functionality is isolated in its own module, and within each one it follows a hexagonal architecture, allowing in this way, in case of having to eliminate or inherit a type, only the module has to be reviewed in question.
+
+## API documentation
+
+See the OpenAPI documentation [here](http://localhost:8080/webjars/swagger-ui/index.html) with Swagger UI.
