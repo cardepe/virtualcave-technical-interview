@@ -1,6 +1,7 @@
 package com.virtualcave.rate.domain.repository;
 
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
+import com.virtualcave.rate.domain.dto.filter.RateFilterDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.domain.entity.RateEntity;
 import reactor.core.publisher.Flux;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public interface RateRepository {
 
-    Flux<RateEntity> list();
+    Flux<RateEntity> list(Mono<RateFilterDto> filterDto);
 
     Mono<Optional<RateEntity>> find(Integer id);
 

@@ -112,6 +112,23 @@ paths:
       description: delete-rate-v1
 components:
   schemas:
+    Currency:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: €
+        code:
+          type: string
+          description: ISO Code of the currency
+          example: EUR
+        decimals:
+          type: integer
+          example: 2
+      required:
+        - symbol
+        - code
+        - decimals
     Rate:
       title: Rate
       x-stoplight:
@@ -132,8 +149,8 @@ components:
           format: date
         price:
           type: integer
-        currencyCode:
-          type: string
+        currency:
+          $ref: '#/components/schemas/Currency'
       required:
         - id
         - brandId
@@ -141,7 +158,7 @@ components:
         - startDate
         - endDate
         - price
-        - currencyCode
+        - currency
     ReqCreateRate:
       title: ReqCreateRate
       x-stoplight:

@@ -3,6 +3,7 @@ package com.virtualcave.rate.infrastructure.repository;
 import com.virtualcave.rate.application.mappers.MapRCToRateEntity;
 import com.virtualcave.rate.application.mappers.MapRUToRateEntity;
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
+import com.virtualcave.rate.domain.dto.filter.RateFilterDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.domain.entity.RateEntity;
 import com.virtualcave.rate.domain.repository.RateRepository;
@@ -24,8 +25,8 @@ public class RateRepositoryImpl implements RateRepository {
     }
 
     @Override
-    public Flux<RateEntity> list() {
-        return this.rateRepositoryJpa.findAll();
+    public Flux<RateEntity> list(Mono<RateFilterDto> filterDto) {
+        return filterDto.flatMapMany(f -> this.rateRepositoryJpa.list(f.getBrandId(), f.getProductId(), f.getDate()));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.virtualcave.rate.application.exceptions.RateForIdNotFoundException;
 import com.virtualcave.rate.application.mappers.MapRToRateDto;
 import com.virtualcave.rate.domain.dto.RateDto;
 import com.virtualcave.rate.domain.dto.creator.RateCreateDto;
+import com.virtualcave.rate.domain.dto.filter.RateFilterDto;
 import com.virtualcave.rate.domain.dto.updater.RateUpdateDto;
 import com.virtualcave.rate.domain.entity.RateEntity;
 import com.virtualcave.rate.domain.repository.RateRepository;
@@ -26,9 +27,9 @@ public class RateServiceImpl implements RateService {
     }
 
     @Override
-    public Flux<RateDto> list() {
+    public Flux<RateDto> list(Mono<RateFilterDto> filterDto) {
 
-        final Flux<RateEntity> list = this.rateRepository.list();
+        final Flux<RateEntity> list = this.rateRepository.list(filterDto);
 
         return getMapper(MapRToRateDto.class).from(list);
     }
